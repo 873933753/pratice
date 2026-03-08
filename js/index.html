@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <input type="text" id="input">
+    <div draggable="true" id="box" style="width: 200px;height: 100px;background: red;">
+      test
+    </div>
+  </div>
+  <script>
+    /* 
+      debounce - 防抖
+      作用：冷静后执行。（节流是固定频率执行）
+      实际场景：
+      1）按钮重复点击，停止才执行
+      2）输入框输入，停止才执行
+    */
+    function debounce(fn,delay = 500){
+      // timer是在闭包中的，闭包保持的是timer的id
+      let timer = null;
+      return function(){
+        if(timer){ // 只要有一个定时器没有执行完，都清空，从再次出发计算
+          clearTimeout(timer) //这里是避免生成多个定时器
+        }
+        timer = setTimeout(() => {
+          fn()
+          // fn.apply(this,arguments)
+          timer = null
+        },delay)
+      }
+    }
+
+    /*
+     throttle -  节流
+     作用：固定频率执行
+    
+    */
+    function throttle(fn,delay = 500){
+      let timer = null
+      return function(){
+        if(timer){ // 只要定时器未执行完，都return，让它执行完再从头执行
+          return
+        }
+        timer = setTimeout(() => {
+          // clearTimeout(timer) 这里不能clear，因为clear了就不继续执行了
+          fn.apply(this,arguments) //要不然e传不进去
+          timer = null
+          // clear 只是终止定时器，但 timer 变量仍保存着定时器 ID（数字），这个变量会一直占用内存，且可能导致「重复清理」「逻辑判断错误」等问题；timer = null 是让变量不再指向任何值，释放对定时器 ID 的引用。
+        },delay)
+      }
+    }
+
+    function throttle2(fn, interval) {
+      let lastTime = 0;  // 闭包保持上次执行时间
+      return function (...args) {
+        const now = Date.now();
+        if (now - lastTime >= interval) {
+          lastTime = now;
+          fn.apply(this, args);
+        }
+      };
+    }
+
+
+    /* 防抖 */
+    const input = document.getElementById('input');
+    /* let timer = null;
+    input.addEventListener('input', () => {
+      if(timer){
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        console.log('debounce', input.value);
+        timer = null;
+      }, 300);
+    }); */
+
+    input.addEventListener('input',debounce(() => {//这里debounce返回的是一个函数，而add后就是要的函数
+      console.log('debounce',input.value)
+    },1000))
+
+
+
+    const box = document.getElementById('box')
+    /* let timer = null
+    box.addEventListener('drag',function(e) {
+      if(timer){
+        return
+      }
+      timer = setTimeout(() => {
+        console.log('drag',e.offsetX,e.offsetY)
+        timer = null
+      },500)
+    }) */
+
+    function throttle3(fn,interval){
+      let lastTime = 0;
+      return function(){
+        const now = new Date()
+        if(now - lastTime >= interval){
+          fn.apply(this,arguments)
+          lastTime = now
+        }
+      }
+    }
+    box.addEventListener('drag',throttle3((e) => {
+      console.log('drag',e.offsetX,e.offsetY)
+    },500))
+  </script>
+</body>
+</html>
