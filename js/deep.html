@@ -9,8 +9,57 @@
   <script>
     const objOrigin = {
       name:'hanber',
-      
+      age:19,
+      info:{
+        like:'you'
+      }
     }
+    /* 浅拷贝，只拷贝第一层 */
+    const objNew = {...objOrigin}
+    objNew.name = 'alco'
+    objNew.info.like = 'me'
+    console.log('objNew',objNew) //new的name是alco,like是me
+    console.log('objOrigin',objOrigin)// orgin的name是hanber,like也是me，因为是浅拷贝，new只拷贝了第一层，所以info中都会被影响
+
+    /* 深拷贝（对于引用类型）
+       拷贝所有层级
+        1） JSON 序列化（简单场景，有局限性）
+    */
+   /* 1） JSON 序列化（简单场景，有局限性）*/
+   const objOrigin2 = {
+      name:'hanber',
+      age:19,
+      info:{
+        like:'you'
+      }
+    }
+   const obj1 = JSON.parse(JSON.stringify(objOrigin2))
+   obj1.name = 'a'
+   obj1.info.like = 'b'
+   console.log('obj1',obj1)//name:a,like:b
+   console.log('objOrigin2',objOrigin2)//name:hanber,like:you
+
+   /* 2）递归实现深拷贝（通用，无局限性） */
+   function deepClone(obj = {}){
+    // 如果不是引用类型或者位null不用深拷贝，直接返回
+    if(typeof obj !== 'object' || obj == null){
+      return obj
+    }
+    let result = null //判断是数组还是object
+    if(obj instanceof Array){
+      result = []
+    }else{
+      result = {}
+    }
+    for( let key in obj){
+      //深层递归
+      if(obj.hasOwnProperty(key)){ //只拷贝自身属性（不是原项链上的属性）
+        result[key] = deepClone(obj[key]) //递归调用
+      }
+    }
+    return result
+   }
+
   </script>
 </body>
 </html>
