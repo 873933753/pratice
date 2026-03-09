@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+     /* hoisting */
+     console.log(h) //undefined
+     var h = '123'
+     console.log(fun()) // undefined,但是打印函数中的内容
+     function fun(){
+      console.log('hahah')
+     }
+
+     // 实际开发/面试中常用：先调用函数，再声明（依赖变量提升）
+    initApp(); 
+
+    function initApp() {
+      console.log("应用初始化"); // 正常执行，不会报错
+    }
+  </script>
+</body>
+</html>
