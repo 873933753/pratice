@@ -35,6 +35,70 @@
       }
     }
 
+    import { useState, useEffect, useRef } from 'react';
+
+/**
+ * 防抖值 Hook
+ * @param {any} value - 需要防抖的值
+ * @param {number} delay - 防抖延迟时间，默认500ms
+ * @returns {any} - 防抖后的最新值
+ */
+  function useDebounce(value, delay = 500) {
+    // 保存防抖后的结果
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    // 保存定时器ID
+    const timerRef = useRef(null);
+
+    useEffect(() => {
+      // 每次value变化，先清空定时器
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      // 重新设置定时器，延迟更新防抖值
+      timerRef.current = setTimeout(() => {
+        setDebouncedValue(value);
+        timerRef.current = null;
+      }, delay);
+
+      // 清理函数：组件卸载/value/delay变化时清空定时器
+      return () => {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+      };
+    }, [value, delay]);
+
+    return debouncedValue;
+  }
+
+  // ========== 使用示例 ==========
+  function SearchInput() {
+    // 原始输入值
+    const [inputValue, setInputValue] = useState('');
+    // 获取防抖后的输入值（500ms后更新）
+    const debouncedValue = useDebounce(inputValue, 500);
+
+    // 监听防抖值变化，执行搜索逻辑
+    useEffect(() => {
+      if (debouncedValue) {
+        console.log('防抖后搜索：', debouncedValue);
+        // 接口请求等逻辑写在这里
+      }
+    }, [debouncedValue]);
+
+    return (
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="输入搜索内容（防抖500ms）"
+      />
+    );
+  }
+
+export default SearchInput;
+
     /*
      throttle -  节流
      作用：固定频率执行

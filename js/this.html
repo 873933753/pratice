@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 
+     this - this取什么值，是在函数执行的时候决定的，不是函数定义的时候决定的
+     1、作为普通函数 - this返回的是  window
+     2、使用call apply bind
+     3、作为对象方法被调用
+     4、在class方法中调用 - 返回的是实例本身
+     5、箭头函数（箭头函数的this永远取的上级作用域的this）- 找上级作用域的this指向
+    */
+
+    function fn1(){
+      console.log(this)
+    }
+    const fn2 = fn1.bind({name:'hanber'},1)
+    console.log(fn2)
+
+    // 定义一个人物对象
+    const person = {
+      name: "张三",
+      age: 20,
+      // 基础函数：打印人物信息 + 额外参数
+      sayHi: function (hobby, city) {
+        console.log(`我是${this.name}，年龄${this.age}，爱好${hobby}，住在${city}`);
+      }
+    };
+
+    // 另一个对象（用来替换this指向）
+    const anotherPerson = {
+      name: "李四",
+      age: 25
+    };
+
+    /* 1、bind 【新函数 = 函数.bind(thisArg,参数1，参数2...) 】
+      bind返回一个新的函数（还未执行），并且改变原来函数的指向
+      --适合延迟执行
+    */ 
+    const lisi = person.sayHi.bind(anotherPerson) 
+    console.log(person.sayHi()) // 我是张三，年龄20，爱好undefined，住在undefined
+    console.log('lisi:'+lisi()) // 我是李四，年龄25，爱好undefined，住在undefined
+
+    /* 
+      2、call【函数名.call(thisArg,参数1，参数2...)】
+      立即执行函数，并改变指向
+      --适合参数数量明确，需要立即执行的场景（如继承）
+    */
+   const xiaoming = {
+    name:'xiaoming',
+    age:3
+   }
+   console.log(person.sayHi.call(xiaoming,'tennis','shanghai')) // 我是xiaoming，年龄3，爱好tennis，住在shanghai
+
+   /* 
+     3 、apply - 【函数名.apply(thisArg,[参数1，参数2...])】
+     立即执行，参数是数组形式
+     --适合参数是数组类
+   */
+  console.log(person.sayHi.apply(xiaoming,['baseball','beijing'])) // 我是xiaoming，年龄3，爱好baseball，住在beijing
+
+  /* 手写bind - 返回一个函数 */
+  Function.prototype.bind1 = function(){
+    // 第一参数改变指向
+    const self = this;
+    const args = Array.prototype.slice.call(arguments) //转为真的数组，arguments只有索引和长度，or Array.from(arguments);
+    const first = args.shift() //作用是删除数组的第一个元素，并返回这个被删除的元素，同时会直接修改原数组
+    
+    return function(...arr){
+      return self.call(first,...(args.concat(arr))) // or self.apply(self,arr)
+    }
+  }
+
+  Function.prototype.myBind = function(context,...bindArgs){
+    // 第一参数改变指向
+    const self = this;    
+    return function(...args){
+      const newArgs = bindArgs.concat(args)
+      return self.apply(context,newArgs) // 因为函数可能也会有参数
+    }
+  }
+  const xiaohong = {
+    name:'小红'
+  }
+  const xh = person.sayHi.bind1(xiaohong,'basketball')
+  xh('guangdong') //我是小红，年龄undefined，爱好basketball，住在guangdong - 缺陷是未拼接参数
+  person.sayHi.myBind(xiaohong,'basketball')('广东') // 我是小红，年龄undefined，爱好basketball，住在广东
+  
+
+  /* 手写apply */
+  Function.prototype.myApply = function(_this,arr){
+    const self = this
+    // const args = Array.prototype.slice.call(arguments)
+    // const _this = args.shift()
+    return self.call(_this,...arr)
+  }
+  console.log(person.sayHi.myApply(xiaoming,['baseball','beijing'])) // 我是xiaoming，年龄3，爱好baseball，住在beijing
+  </script>
+</body>
+</html>
