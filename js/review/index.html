@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 
+    1、closure-闭包
+    2、debounce-防抖
+    3、trottle-节流
+    4、deepClone - 深克隆
+    5、flatten - 数组扁平化
+     */
+    /* 1、closure
+    -函数定义的地方和调用的地方不一致,闭包的自由变量是定义的时候的
+    1）、函数作为返回值
+    2）、函数作为参数传递
+    */
+
+    // closure-1：函数作为返回值
+    function closureFun1(){
+      const a = 1;
+      return function(){
+        console.log(a)
+      }
+    }
+    const a = 3;
+    const cfn = closureFun1()
+    cfn() // 1而不是3
+
+    // closure-2:函数作为参数传递
+    function closureFun2(fn){
+      const b = 1;
+      fn()
+    }
+    const b = 2;
+    closureFun2(() => {
+      console.log(b) //2而不是1，找变量是在定义的时候，而不是调用的时候
+    })
+    
+    /* 闭包引用-保持的是timer的id
+    debounce - 冷静后才执行
+    */
+   function debounce(fn,delay){
+    const timer = null
+    return function(){
+      if(timer){
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        fn.apply(this,arguments)
+        timer = null
+      },delay)
+    }
+   }
+
+   /* 闭包应用-保持的是上次时间
+  throttle-节流，以固定频率触发
+   */
+  function throttle(fn,interval){
+    const lastTime = 0;
+    return function(){
+      const now = new Date()
+      if(now - lastTime > interval){
+        lastTime = now
+        fn.apply(this.arguments)
+      }
+    }
+  }
+
+
+  /* 深拷贝 */
+  function deepClone(obj = {}){
+    if(typeof obj !== 'object' || typeof obj == null){
+      return
+    }
+    const result = obj instanceof Array ? [] : {}
+
+    for(let key in obj){
+      if(obj.hasOwnProperty(key)){
+        result[key] = deepClone(obj[key])
+      }
+    }
+    return result
+  }
+  const obj = {
+    name:'hanber',
+    info:{
+      age:18
+    }
+  }
+  const obj2 = deepClone(obj)
+  obj2.info.age = 3
+  console.log('obj1',obj)
+
+  /* 数组扁平化 */
+  const arr = [[1,2,[3],[[4,5]]]]
+  function flatten1(arr = []){
+    const res = []
+    arr.forEach(item => {
+      if(Array.isArray(item)){
+        item.forEach(i => res.push(i))
+      }else{
+        res.push(item)
+      }
+    })
+    return res
+  }
+  console.log('flatten1',flatten1(arr)) // [1,2,[3]]
+
+  function flatten2(arr = []){
+    let res = []
+    arr.forEach(item => {
+      if(Array.isArray(item)){
+        res = res.concat(flatten2(item)) 
+      }else{
+        res = res.concat(item)
+      }
+    })
+    return res
+  }
+  console.log('flatten2',flatten2(arr)) // [1,2,3,4,5]
+
+  </script>
+</body>
+</html>
