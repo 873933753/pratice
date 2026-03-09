@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+    /* 
+     class - 类
+     通过new ClassX 对象
+     通过class xx extends xx实现继承,super调用父类的
+    */ 
+     class Person{
+      constructor(name,age){ // 构造器，初始值传值  
+        this.name = name
+        this.age = age
+      }
+      sayHi(){
+        console.log(`姓名：${this.name},年龄：${this.age}`)
+      }
+     }
+     // 通过new 实例
+     const xiaoming = new Person('xiaoming',18)
+     xiaoming.sayHi() // 姓名：xiaoming,年龄：18
+     console.log(xiaoming.name) // xiaoming
+
+     /* 通过extends实现继承 */
+     class Student extends Person{
+      constructor(name,type){
+        // 必须先调用 super()，且在 this 之前！
+        super(name) // 调用父类构造函数，传递参数 name
+        this.type = type // 子类的实例属性（必须在 super 之后）
+      }
+      study(){
+        console.log(`stydy:${this.type}`)
+      }
+      sayHi(){
+        super.sayHi() // 调用super的sayHi
+        console.log('子类的sayHi')
+      }
+     }
+     const xiaohong = new Student('xiaohong','english')
+     xiaohong.study() // stydy:english
+     xiaohong.sayHi() // 先输出 -> 姓名：xiaohong,年龄：undefined -> 子类的sayHi
+     console.log(xiaohong.name) // xiaohong
+
+
+     /* 
+      每一个类class都有显示原型prototype
+      每一个实例都有隐式原型__proto__
+      实例的__proto__指向类的prototype
+      所以有 xiaoming.__proto__ === Person.protype
+      Student.prototype.__proto__ === Person.prototype
+
+      原型链：每个对象有有隐式原型__proto__，当访问对象的属性/方法时，会先在对象自身找，找不到就沿着__proto__向上找，直到找到或者走到原型链的顶端（null），这条层层向上的链条就是原型链
+
+      instanceof的查找就是原型链的原理
+     */
+  </script>
+</body>
+</html>
