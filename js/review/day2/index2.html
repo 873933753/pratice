@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    async function async1() {
+      console.log('async1 start') // 2 -- 同步
+      await async2() 
+      // await都可看作是异步的callback
+      console.log('async1 end') // 6- 异步-微任务
+    }
+
+    async function async2(){
+      console.log('async2')  // 3 -- 同步
+    }
+
+    console.log('script start') // 1 -- 先执行同步
+
+    setTimeout(function() {
+      console.log('setTimeout') // 8 - 异步-宏任务
+    },0)
+
+    async1()
+
+    new Promise((resolve) => {
+      console.log('promise1') // 4 -- 同步
+      resolve()
+    }).then(() => {
+      console.log('promise2') // 7 - 异步-微任务
+    })
+
+    console.log('script end')// 5-- 同步执行完成
+
+    /* 
+      运行结果：
+                    script start
+      index2.html:11 async1 start
+      index2.html:18 async2
+      index2.html:30 promise1
+      index2.html:36 script end
+      index2.html:14 async1 end
+      index2.html:33 promise2
+      index2.html:24 setTimeout start
+    */
+  </script>
+</body>
+</html>

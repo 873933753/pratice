@@ -8,7 +8,7 @@
 <body>
   <script>
     /* 
-    1、原型、原型链    
+    1、继承、原型、原型链    
     2、作用域
     3、变量提升
     4、this
@@ -17,7 +17,106 @@
     7、宏任务、微任务、eventloop
     */
 
-    
+    /* 1、原型链
+      1）每一个类class都有显示原型prototype，每一个实例都有隐式原型__proto__
+      2) 找属性/方法时，现在自身属性上找，找不到再沿着隐式原型向上找，以为找到null为止
+      3）类的prototype === 实例的__proto__，也就是实例的__proto__指向类的prototype
+    */
+    class Person {
+      constructor(name){
+        this.name = name
+      }
+      sayHi(age){
+        console.log(`name is:${this.name},age is:${age}`)
+      }
+    }
+
+    // 继承
+    class Student extends Person {
+      constructor(name,number){
+        super(name)
+        this.number = number
+      }
+      study(project){
+        console.log(`student name:${this.name},study:${project},number:${this.number}`)
+      }
+    }
+
+    const xiaoming = new Student('xiaoming')
+    xiaoming.study('eng')  
+    console.log(xiaoming.__proto__ === Student.prototype) // true
+    console.log(Student.prototype.__proto__ == Person.prototype) // true
+
+    /* 
+    2、作用域（就是变量可以合法访问的范围）
+    1）全局作用域
+    2）函数作用域
+    3）块级作用域
+    自由变量：就是变量赋值的地方和定义的地方不一样
+    */
+
+    /* 
+    3、变量提升
+    就是变量的声明提升到顶部，比如有些访问的时候在声明之前。
+    作用：像函数的调用可以在函数声明之前，使用更便捷
+    */
+
+    /* 
+    this指向问题：this的指向是调用的时候确定的，不是声明的时候确定的
+    1）普通函数 - 指向window
+    2）在class中调用，返回的是实例本身
+    3）箭头函数中调用，找的的上一级作用域的指向（（箭头函数的this永远取的上级作用域的this））
+    4）修改this指向，bind、call、apply
+    bind返回的是函数
+    call和apply都是自动执行，apply的参数是数组
+    */
+    // 手写bind
+    Function.prototype.myBind = function(context,...bindArgs){
+      const self = this
+      return function(...args){
+        const newArgs = bindArgs.concat(args)
+        self.apply(context,newArgs)
+      }
+    }
+
+    const fn = xiaoming.study.bind({name:'haha',number:123})
+    fn('china') // student name:haha,study:china,number:123
+
+    const fn2 = xiaoming.study.myBind({name:'wawa',number:456})
+    fn2('math') // student name:wawa,study:math,number:456
+
+    /* 
+    Promise
+    1)两个参数，resolve、reject（都是函数）
+    2）3个状态，pending -> fulfulled/rejected
+    3)fulfilled状态执行then，rejected执行catch
+    4）then和catch的状态转变，正常then里返回fulfilled状态里面报错则进入catch，catch执行完返回fulfilled里面报错rejected
+    */
+
+    /* 
+    async/await - 异步的同步写法
+    1）await需要async函数包裹
+    2）await相当于promise的then，返回的是Promise
+    3）await下面的都相当于是callback，进入异步
+    4）执行async函数返回的Promise
+    5）用try...catch捕获异常，替代Promise的catch
+    */
+
+    /* 
+    宏任务、微任务
+    1）宏任务：是浏览器方面的，setTimeout、setInterval、Dom渲染、ajax
+    2）Promise、async/await
+    3) 微任务比宏任务先执行
+    */
+
+    /* 
+    event loop - 因为js是单线程的，event loop就是调度同步和异步执行的顺序的
+    1）先执行同步放入call Stack中，遇到异步先放进另一个队列（Quene）
+    2）同步任务执行完成，再执行所有的微任务
+    3）进行DOM渲染（DOM渲染仔微任务之后，在宏任务之前）
+    4）执行宏任务
+    */
+
   </script>
 </body>
 </html>
