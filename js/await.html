@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 
+      async/await - 同步的语法实现异步，彻底消灭回调函数
+      1、执行await 必须有 async函数作为包裹
+      2、和Promise的关系
+        1）执行async函数，返回的是Promise对象
+        2）await 相当于Promise的then (await的下面，都可以来看做是callback里的内容，即异步)
+        3）try...catch可捕获异常，替代Promise的catch
+    */
+
+    // 1、使用方法 - 
+    function loadImg(url){
+      const p = new Promise((resolve,reject) => {
+        const img = document.createElement('img')
+        img.onload = () => {
+          resolve(img) // resolve才会执行then
+        }
+        img.src = url
+        img.onerror = () => {
+          const err = new Error('图片加载失败')
+          reject(err) // reject才会执行catch
+        }
+      })
+      return p
+    }
+
+    const url = 'https://img1.sycdn.imooc.com/user/5a9fc8070001a82402060220-100-100.jpg';
+    const url2 = 'https://img1.sycdn.imooc.com/szimg/62620c38093d0ccd12000676.jpg';
+    // primise实现的
+    loadImg(url).then(res => {
+      console.log('img--',res.width)
+      return loadImg(url2)
+    }).catch(err => {
+      console.log(err)
+    }).then(img2 => {
+      console.log('img2-',img2.height)
+    })
+    // async/await实现的
+    const fn_a = async function (){
+      const img = await loadImg(url)  // 执行await 必须有 async函数作为包裹
+      console.log('await-img',img.height)
+      const img2 = await loadImg(url2)
+      console.log('await-img2',img2.height) // 676
+    }
+    fn_a()
+  </script>
+</body>
+</html>

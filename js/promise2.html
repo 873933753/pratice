@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    Promise.resolve().then(() => {
+      console.log(1)
+    }).catch(() => {
+      console.log(2)
+    }).then(() => {
+      console.log(3)
+    })// 打印1、 3
+
+    Promise.resolve().then(() => {
+      console.log('p2-'+1) // step1--1
+      throw new Error('error') // 状态为rejected进入catch
+    }).catch(() => {
+      console.log('p2-'+2) // step2--2,状态为fulfilled进入then
+    }).then(() => {
+      console.log('p2-'+3) // step3
+    }) // 1、2、3
+
+    Promise.resolve().then(() => {
+      console.log('p3-'+1) // step1--1
+      throw new Error('error') // 状态为rejected进入catch
+    }).catch(() => {
+      console.log('p3-'+2) // step2--2,状态为fulfilled进入then，但是下面是catch，所以不执行
+    }).catch(() => {
+      console.log('p3-'+3)
+    }) // 1、2
+    
+  </script>
+</body>
+</html>

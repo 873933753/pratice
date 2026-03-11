@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 
+      异步和同步
+      1）基于js是单线程语言
+      2）异步不会阻塞代码（是基于callback函数实现的）
+      3）同步会阻塞代码
+        a、异步应用场景：网络请求，如ajax、请求图片（img的onload是异步的）
+        b、 定时任务，如setTimeout
+      4）promise - 解决回调地狱（callback hell,但是也是基于回调函数实现的）
+    */
+   
+    function delayFetch(){
+      const p = new Promise((resolve,reject) => {
+        setTimeout(() => {
+          resolve()
+        },5000)
+      })
+      return p
+    }
+
+    delayFetch().then(res => {
+      // then中是resolve返回的
+      console.log('hahah') // step2 - 5s后打印hahah
+    }).catch(err => {
+      // catch是捕获reject跑出来的错误
+      console.log(err)
+    })
+    console.log(1) // step1 - 先打印1
+
+  </script>
+</body>
+</html>

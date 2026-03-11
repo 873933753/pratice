@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* promise
+      1) 两个参数resolve,reject是函数
+      2) 三个状态，pending、fulfilled、rejected，pending-》rejected/fulfilled，且状态不可逆（fulfilled才会出发then回调，rejected才会出发catch回调）
+      3) then正常返回resolved，如果里面有报错则返回rejected，catch正常返回resolved，里面有报错则返回rejected
+      4）then和catch的链式调用
+    */
+
+    /* promise实现的加载图片 */
+    function loadImg(url){
+      const p = new Promise((resolve,reject) => {
+        const img = document.createElement('img')
+        img.onload = () => {
+          resolve(img) // resolve才会执行then
+        }
+        img.src = url
+        img.onerror = () => {
+          const err = new Error('图片加载失败')
+          reject(err) // reject才会执行catch
+        }
+      })
+      return p
+    }
+
+    const url = 'https://img1.sycdn.imooc.com/user/5a9fc8070001a82402060220-100-100.jpg'
+    loadImg(url).then(res => {
+      console.log('img--',res.width)
+    }).catch(err => {
+      console.log(err)
+    })
+
+     /* promise的三种状态- pending、fulfilled、rejected */
+     const p1 = new Promise(() => {})
+     console.log('p1',p1) //此时promise状态是pending，因为没有改变状态的函数处理
+
+     const p2 = Promise.resolve(110)
+     console.log('p2',p2) // promise状态是fulfilled
+
+     const p3 = Promise.reject(123)
+     console.log('p3',p3) // rejected
+
+     /* then和catch中的状态改变
+       then正常返回resolved，如果里面有报错则返回rejected
+       catch正常返回resolved，里面有报错则返回rejected
+     */
+    const p11 = Promise.resolve().then(() => {
+      return 100
+    }).then(() => {
+      console.log('p11-then')
+    })
+    console.log('p11',p11) // fulfilled,出发后续then的回调
+
+    const p12 = Promise.resolve().then(() => {
+      throw Error('error')
+    }).catch(err => {
+      console.log('p12-err',err) 
+    })
+    console.log('p12',p12) // rejected (then里抛出了错误，返回rejected,进入catch)
+
+    const p13 = Promise.reject().catch((err) => {
+
+    })
+    console.log('p13',p13) // fulfilled
+
+    const p14  = Promise.reject().catch((err) => {
+      throw Error('p14-catch')
+    }).catch(err => {
+      console.log('p14-catch-catch',err)
+    })
+    console.log('p14',p14) // rejected(catch里抛出了错误，返回rejected,进入下一个catch)
+
+  </script>
+</body>
+</html>

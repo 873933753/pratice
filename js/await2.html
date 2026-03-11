@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 
+      和Promise的关系
+        1）执行async函数，返回的是Promise对象
+        2）await 相当于Promise的then
+        3）try...catch可捕获异常，替代Promise的catch
+    */
+
+   // 1) - 执行async函数，返回的是Promise对象
+   const fn = async function () {
+      return 100
+   }
+   console.log(fn()) // Promise {<fulfilled>: 100}
+    fn().then(data => {
+      console.log(data) //100
+    })
+
+    // 2)await相当于Promise的then
+    !(async function (params) {
+        const p = Promise.resolve(100)
+        const data = await p
+        console.log('data--',data) // data--100,Promise.resolve后应该进入then状态，所以await相当于then
+    })()
+
+    // 3) 用try ...catch捕获异常
+    !(async function(){
+      const p = Promise.reject('p2-err')
+      try{
+        const fn = await p
+        console.log(fn)
+      } catch(err){
+        console.log(err) // p2-err
+      }
+    })()
+
+    
+  </script>
+</body>
+</html>
