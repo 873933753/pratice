@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /* 
+      == 和 ===
+      == 具有隐式转换 。 值相等 .valueOf或者toString
+      === 严格相等，值和类型都等才返回true
+    */
+    // String.prototype.valueOf = function(){
+
+    // }
+    console.log( 1 == '1') // true
+    String.prototype.valueOf = function(){
+      return 100
+    }
+    console.log( 1 + '1') // 11 而不是2， + 是字符串拼接，-计算数字
+    console.log( 2 -  '1'.valueOf()) // 1 等价 2 - '1'
+    console.log( 2 - '1')
+
+    console.log(String.prototype.valueOf)
+    console.log(2 - '1'.valueOf())
+
+    /* 
+    为何 [] == ![]
+    1） ![] = false , []是true，因为所有对象转布尔值都是 true，除了 null 和 undefined
+    2） [] == 0 ，布尔转为数字
+    3） "" = 0 ,[] 转原始值为 ""
+    4) 0 == 0
+    
+    // {} 有所不同
+    {} == false  // SyntaxError? 注意 {} 在开头会被解析为代码块
+    ({}) == false // false（{} 转字符串为 "[object Object]"）
+    */
+    console.log( [] == false) // true
+    {} == false  // SyntaxError? 注意 {} 在开头会被解析为代码块
+    ({}) == false // false（{} 转字符串为 "[object Object]"）
+
+    
+  </script>
+</body>
+</html>

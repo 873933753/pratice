@@ -16,6 +16,61 @@
      5、箭头函数（箭头函数的this永远取的上级作用域的this）- 找上级作用域的this指向
     */
 
+    console.log('========1、作为普通函数=======')
+    function normalFun(){
+      console.log(this)
+    }
+    normalFun() // this 指向window
+
+    console.log('========3、作为对象方法被调用=======')
+    class Animal {
+      constructor(){
+        this.name = 'animal'
+      }
+      get(){
+        return this.whisper
+      }
+      set(value){
+        this.whisper = value
+        console.log(this)
+      }
+    }
+
+    let cat = new Animal() // this指向新的对象，这个实例，Animal {name: 'animal', whisper: 'miao'}
+    cat.set('miao')
+    console.log(cat.get())
+
+    let dog = new Animal() 
+    cat.set('wang')
+
+    console.log('========5、箭头函数中 =======')
+    let j1 = () => {
+      console.log(this)
+    }
+    j1() // 找上级作用域的this指向，window
+
+    let j2 = {
+      name:"t",
+      get:function(){
+        console.log(this.name)
+        setTimeout(function(){
+          console.log('====j2   1====')
+          console.log(this.name) // 这里无法打印出来name，this指向window
+        },1000)
+      },
+      get2:function(){
+        console.log(this.name)
+        setTimeout(() => {
+          console.log('====j2  2====')
+          console.log(this.name) // 可以打印name，this指向j2对象
+        },1000)
+      }
+    }
+    j2.get()
+    j2.get2()
+
+
+    console.log('=================== 2、使用call apply bind ============')
     function fn1(){
       console.log(this)
     }

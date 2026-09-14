@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="box"></div>
+  <script>
+    /* promise
+      1) 两个参数resolve,reject是函数
+      2) 三个状态，pending、fulfilled、rejected，pending-》rejected/fulfilled，且状态不可逆
+      （fulfilled 才会出发then回调，rejected才会出发catch回调）
+      3) then正常返回resolved，如果里面有报错则返回rejected，catch正常返回resolved，里面有报错则返回rejected
+      （then 和 catch 正常均返回 fulfilled，里面有把报错则返回 rejected ）
+      4）then和catch的链式调用
+    */
+
+    function loadImg(url){
+      const promise = new Promise((res,rej) => {
+        const img = document.createElement('img')
+        img.src = url
+        img.onload = () => {
+          res(img)
+        }
+        img.onerror = () => {
+          const err = new Error('图片加载失败')
+          rej(err)
+        }
+      })
+      return promise
+    }
+
+    const url = 'https://img1.sycdn.imooc.com/user/5a9fc8070001a82402060220-100-100.jpg' // 有效链接
+    const url2 = 'https://xxx.png' // 无效链接
+
+    loadImg(url).then(res => {
+      console.log(res.width) // 有效链接进resolve
+      // throw Error('then报错') // then报错会进入接下来的catch
+    }).catch(err => {
+      console.log(err) // 无效链接失败进catch
+      // throw Error('catch报错') // catch 报错会进入 catch - 2
+    }).then(() => {
+      console.log('then - 2') // 
+    }).catch(() => {
+      console.log('catch - 2')
+    })
+
+
+    console.log('正常的promise，接收两个函数')
+    const normal_p = new Promise((res,rej) => {
+      // if(){
+
+      // }
+    })
+
+  </script>
+</body>
+</html>

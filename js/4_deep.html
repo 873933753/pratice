@@ -21,6 +21,18 @@
     console.log('objNew',objNew) //new的name是alco,like是me
     console.log('objOrigin',objOrigin)// orgin的name是hanber,like也是me，因为是浅拷贝，new只拷贝了第一层，所以info中都会被影响
 
+    console.log('=====')
+    let arr1 = [];
+    let arr2 = []
+    console.log(arr1 == arr2); // false ,arr1存储的是这个对象的引用（内存地址）
+
+    let arr3 = [];
+    let arr4 = arr3
+    arr3 == arr4;
+    console.log(arr3 == arr4) // true
+    
+    console.log('=====')
+
     /* 深拷贝（对于引用类型）
        拷贝所有层级
         1） JSON 序列化（简单场景，有局限性）

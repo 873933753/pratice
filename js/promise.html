@@ -9,8 +9,10 @@
   <script>
     /* promise
       1) 两个参数resolve,reject是函数
-      2) 三个状态，pending、fulfilled、rejected，pending-》rejected/fulfilled，且状态不可逆（fulfilled才会出发then回调，rejected才会出发catch回调）
+      2) 三个状态，pending、fulfilled、rejected，pending-》rejected/fulfilled，且状态不可逆
+      （fulfilled才会出发then回调，rejected才会出发catch回调）
       3) then正常返回resolved，如果里面有报错则返回rejected，catch正常返回resolved，里面有报错则返回rejected
+      （then 和 catch 正常均返回 fulfilled，里面有把报错则返回 rejected ）
       4）then和catch的链式调用
     */
 
@@ -56,7 +58,7 @@
     }).then(() => {
       console.log('p11-then')
     })
-    console.log('p11',p11) // fulfilled,出发后续then的回调
+    console.log('p11',p11) // p11 fulfilled, p11-then 触发后续then的回调
 
     const p12 = Promise.resolve().then(() => {
       throw Error('error')
